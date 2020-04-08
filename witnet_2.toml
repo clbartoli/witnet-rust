@@ -1,0 +1,71 @@
+# You can read more about all the configuration params in
+# https://docs.witnet.io/configuration/toml-file/
+[connections]
+# Server address tells what local interface and port the Witnet node server should bind to.
+# This will probably look like `0.0.0.0:21337` or `192.168.x.x:21337`, but it totally depends on your local network.
+server_addr = "0.0.0.0:21337"
+# Public address needs to match your *public* IP and port, assuming your router is configured to forward incoming
+# connections to the local IP of the device the node is running. Failure to configure this setting will result in your
+# node not receiving inbound connections (see: https://docs.witnet.io/try/run-a-node/#open-your-ports).
+public_addr = "0.0.0.0:21337"
+known_peers = [
+    "52.166.178.145:21337",
+    "94.130.108.133:21337",
+    "77.224.104.204:21337",
+    "173.212.199.96:21337",
+    "45.32.127.187:21337",
+    "167.86.89.36:21337",
+    "144.91.114.154:21337",
+    "173.212.214.124:21337",
+    "47.254.173.135:21337",
+    "8.209.65.253:21337",
+    "207.61.234.35:21337",
+    "76.170.96.97:21337",
+    "144.91.73.85:21337",
+    "18.140.218.49:21337",
+    "79.152.202.140:21337",
+    "51.15.121.63:21337",
+    "167.86.102.170:21337",
+    "51.83.93.209:21337",
+    "167.86.116.89:21337",
+    "173.212.212.43:21337",
+    "164.68.100.118:21337",
+    "144.217.204.0:21337",
+    "167.86.76.5:21337",
+    "217.254.186.98:21337",
+    "73.153.225.122:21337",
+    "41.212.58.87:21337",
+    "144.202.100.245:21337"
+]
+outbound_limit = 4
+bootstrap_peers_period_seconds = 1
+
+[storage]
+db_path = ".witnet"
+
+[jsonrpc]
+enabled = true
+server_address = "127.0.0.1:21338"
+
+[consensus_constants]
+checkpoints_period = 45
+checkpoint_zero_timestamp = 1585742400
+bootstrap_hash = "00000000000000000000000000000000000000007769746e65742d302e372e33"
+genesis_hash = "15493414fde678612be9811777bb26f019af75de23daffd41974fccd784c89b2"
+mining_replication_factor = 1
+
+[ntp]
+update_period_seconds = 8000000
+
+[mining]
+enabled = true
+data_request_max_retrievals_per_epoch = 30
+data_request_timeout_milliseconds = 2000
+genesis_path = "genesis_block.json"
+
+[log]
+level = "debug"
+
+[wallet]
+testnet = true
+node_url = "127.0.0.1:21338"

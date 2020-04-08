@@ -1,0 +1,89 @@
+2020/04/06-18:21:26.196014 7f6d00759f80 RocksDB version: 6.2.4
+2020/04/06-18:21:26.196124 7f6d00759f80 Git sha rocksdb_build_git_sha:@76a56d89a7740f8dbb01edabf1ea5abc95a67657@
+2020/04/06-18:21:26.196128 7f6d00759f80 Compile date Mar 26 2020
+2020/04/06-18:21:26.196131 7f6d00759f80 DB SUMMARY
+2020/04/06-18:21:26.196229 7f6d00759f80 CURRENT file:  CURRENT
+2020/04/06-18:21:26.196233 7f6d00759f80 IDENTITY file:  IDENTITY
+2020/04/06-18:21:26.196246 7f6d00759f80 MANIFEST file:  MANIFEST-000036 size: 493 Bytes
+2020/04/06-18:21:26.196252 7f6d00759f80 SST files in .witnet-local-wallet/witnet_wallet.db dir, Total Num: 2, files: 000033.sst 000035.sst 
+2020/04/06-18:21:26.196255 7f6d00759f80 Write Ahead Log file in .witnet-local-wallet/witnet_wallet.db: 000037.log size: 2108 ; 
+2020/04/06-18:21:26.196260 7f6d00759f80                         Options.error_if_exists: 0
+2020/04/06-18:21:26.196263 7f6d00759f80                       Options.create_if_missing: 1
+2020/04/06-18:21:26.196264 7f6d00759f80                         Options.paranoid_checks: 1
+2020/04/06-18:21:26.196266 7f6d00759f80                                     Options.env: 0x55f8a918f4a0
+2020/04/06-18:21:26.196268 7f6d00759f80                                Options.info_log: 0x55f8aa1cd890
+2020/04/06-18:21:26.196271 7f6d00759f80                Options.max_file_opening_threads: 16
+2020/04/06-18:21:26.196274 7f6d00759f80                              Options.statistics: (nil)
+2020/04/06-18:21:26.196276 7f6d00759f80                               Options.use_fsync: 0
+2020/04/06-18:21:26.196278 7f6d00759f80                       Options.max_log_file_size: 0
+2020/04/06-18:21:26.196280 7f6d00759f80                  Options.max_manifest_file_size: 1073741824
+2020/04/06-18:21:26.196282 7f6d00759f80                   Options.log_file_time_to_roll: 0
+2020/04/06-18:21:26.196283 7f6d00759f80                       Options.keep_log_file_num: 1000
+2020/04/06-18:21:26.196285 7f6d00759f80                    Options.recycle_log_file_num: 0
+2020/04/06-18:21:26.196288 7f6d00759f80                         Options.allow_fallocate: 1
+2020/04/06-18:21:26.196290 7f6d00759f80                        Options.allow_mmap_reads: 0
+2020/04/06-18:21:26.196292 7f6d00759f80                       Options.allow_mmap_writes: 0
+2020/04/06-18:21:26.196294 7f6d00759f80                        Options.use_direct_reads: 0
+2020/04/06-18:21:26.196297 7f6d00759f80                        Options.use_direct_io_for_flush_and_compaction: 0
+2020/04/06-18:21:26.196298 7f6d00759f80          Options.create_missing_column_families: 0
+2020/04/06-18:21:26.196300 7f6d00759f80                              Options.db_log_dir: 
+2020/04/06-18:21:26.196302 7f6d00759f80                                 Options.wal_dir: .witnet-local-wallet/witnet_wallet.db
+2020/04/06-18:21:26.196304 7f6d00759f80                Options.table_cache_numshardbits: 6
+2020/04/06-18:21:26.196306 7f6d00759f80                      Options.max_subcompactions: 1
+2020/04/06-18:21:26.196309 7f6d00759f80                  Options.max_background_flushes: -1
+2020/04/06-18:21:26.196311 7f6d00759f80                         Options.WAL_ttl_seconds: 0
+2020/04/06-18:21:26.196314 7f6d00759f80                       Options.WAL_size_limit_MB: 0
+2020/04/06-18:21:26.196316 7f6d00759f80             Options.manifest_preallocation_size: 4194304
+2020/04/06-18:21:26.196318 7f6d00759f80                     Options.is_fd_close_on_exec: 1
+2020/04/06-18:21:26.196319 7f6d00759f80                   Options.advise_random_on_open: 1
+2020/04/06-18:21:26.196321 7f6d00759f80                    Options.db_write_buffer_size: 0
+2020/04/06-18:21:26.196324 7f6d00759f80                    Options.write_buffer_manager: 0x55f8aa1cd7d0
+2020/04/06-18:21:26.196326 7f6d00759f80         Options.access_hint_on_compaction_start: 1
+2020/04/06-18:21:26.196327 7f6d00759f80  Options.new_table_reader_for_compaction_inputs: 0
+2020/04/06-18:21:26.196329 7f6d00759f80           Options.random_access_max_buffer_size: 1048576
+2020/04/06-18:21:26.196331 7f6d00759f80                      Options.use_adaptive_mutex: 0
+2020/04/06-18:21:26.196333 7f6d00759f80                            Options.rate_limiter: (nil)
+2020/04/06-18:21:26.196371 7f6d00759f80     Options.sst_file_manager.rate_bytes_per_sec: 0
+2020/04/06-18:21:26.196377 7f6d00759f80                       Options.wal_recovery_mode: 2
+2020/04/06-18:21:26.196379 7f6d00759f80                  Options.enable_thread_tracking: 0
+2020/04/06-18:21:26.196380 7f6d00759f80                  Options.enable_pipelined_write: 0
+2020/04/06-18:21:26.196382 7f6d00759f80         Options.allow_concurrent_memtable_write: 1
+2020/04/06-18:21:26.196384 7f6d00759f80      Options.enable_write_thread_adaptive_yield: 1
+2020/04/06-18:21:26.196386 7f6d00759f80             Options.write_thread_max_yield_usec: 100
+2020/04/06-18:21:26.196387 7f6d00759f80            Options.write_thread_slow_yield_usec: 3
+2020/04/06-18:21:26.196388 7f6d00759f80                               Options.row_cache: None
+2020/04/06-18:21:26.196389 7f6d00759f80                              Options.wal_filter: None
+2020/04/06-18:21:26.196391 7f6d00759f80             Options.avoid_flush_during_recovery: 0
+2020/04/06-18:21:26.196393 7f6d00759f80             Options.allow_ingest_behind: 0
+2020/04/06-18:21:26.196394 7f6d00759f80             Options.preserve_deletes: 0
+2020/04/06-18:21:26.196395 7f6d00759f80             Options.two_write_queues: 0
+2020/04/06-18:21:26.196396 7f6d00759f80             Options.manual_wal_flush: 0
+2020/04/06-18:21:26.196398 7f6d00759f80             Options.atomic_flush: 0
+2020/04/06-18:21:26.196399 7f6d00759f80             Options.avoid_unnecessary_blocking_io: 0
+2020/04/06-18:21:26.196400 7f6d00759f80             Options.max_background_jobs: 2
+2020/04/06-18:21:26.196401 7f6d00759f80             Options.max_background_compactions: -1
+2020/04/06-18:21:26.196402 7f6d00759f80             Options.avoid_flush_during_shutdown: 0
+2020/04/06-18:21:26.196404 7f6d00759f80           Options.writable_file_max_buffer_size: 1048576
+2020/04/06-18:21:26.196405 7f6d00759f80             Options.delayed_write_rate : 16777216
+2020/04/06-18:21:26.196406 7f6d00759f80             Options.max_total_wal_size: 0
+2020/04/06-18:21:26.196407 7f6d00759f80             Options.delete_obsolete_files_period_micros: 21600000000
+2020/04/06-18:21:26.196408 7f6d00759f80                   Options.stats_dump_period_sec: 600
+2020/04/06-18:21:26.196410 7f6d00759f80                 Options.stats_persist_period_sec: 600
+2020/04/06-18:21:26.196411 7f6d00759f80                 Options.stats_history_buffer_size: 1048576
+2020/04/06-18:21:26.196412 7f6d00759f80                          Options.max_open_files: -1
+2020/04/06-18:21:26.196414 7f6d00759f80                          Options.bytes_per_sync: 0
+2020/04/06-18:21:26.196415 7f6d00759f80                      Options.wal_bytes_per_sync: 0
+2020/04/06-18:21:26.196416 7f6d00759f80                   Options.strict_bytes_per_sync: 0
+2020/04/06-18:21:26.196418 7f6d00759f80       Options.compaction_readahead_size: 0
+2020/04/06-18:21:26.196419 7f6d00759f80 Compression algorithms supported:
+2020/04/06-18:21:26.196423 7f6d00759f80 	kZSTDNotFinalCompression supported: 1
+2020/04/06-18:21:26.196426 7f6d00759f80 	kZSTD supported: 1
+2020/04/06-18:21:26.196428 7f6d00759f80 	kXpressCompression supported: 0
+2020/04/06-18:21:26.196430 7f6d00759f80 	kLZ4HCCompression supported: 1
+2020/04/06-18:21:26.196432 7f6d00759f80 	kLZ4Compression supported: 1
+2020/04/06-18:21:26.196434 7f6d00759f80 	kBZip2Compression supported: 1
+2020/04/06-18:21:26.196436 7f6d00759f80 	kZlibCompression supported: 1
+2020/04/06-18:21:26.196437 7f6d00759f80 	kSnappyCompression supported: 1
+2020/04/06-18:21:26.196447 7f6d00759f80 Fast CRC32 supported: Supported on x86
+2020/04/06-18:21:26.196549 7f6d00759f80 [db/db_impl.cc:392] Shutdown: canceling all background work
+2020/04/06-18:21:26.196663 7f6d00759f80 [db/db_impl.cc:565] Shutdown complete

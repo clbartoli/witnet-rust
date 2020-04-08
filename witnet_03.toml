@@ -1,0 +1,37 @@
+# You can read more about all the configuration params in
+# https://docs.witnet.io/configuration/toml-file/
+[connections]
+server_addr = "192.168.1.108:21303"
+known_peers = ["192.168.1.108:21302", "192.168.1.108:21303", "192.168.1.108:21304", "192.168.1.108:21305", "192.168.1.108:21301"]
+outbound_limit = 4
+bootstrap_peers_period_seconds = 1
+
+[storage]
+db_path = ".witnet_03"
+
+[jsonrpc]
+enabled = true
+server_address = "127.0.0.1:4003"
+
+[consensus_constants]
+checkpoints_period = 45
+checkpoint_zero_timestamp = 1584748800
+bootstrap_hash = "00000000000000000000000000000000000000007769746e65742d302e372e31"
+genesis_hash = "a58ec82086f409247494eb05060e9433035426a33714e000e946e1d617fce698"
+mining_replication_factor = 1
+collateral_age = 3
+[ntp]
+update_period_seconds = 8000000
+
+[mining]
+enabled = true
+data_request_max_retrievals_per_epoch = 30
+data_request_timeout_milliseconds = 2000
+genesis_path = "genesis_block/testnet_0.7.1_genesis_block.json"
+
+[log]
+level = "debug"
+
+[wallet]
+testnet = true
+node_url = "127.0.0.1:4003"
