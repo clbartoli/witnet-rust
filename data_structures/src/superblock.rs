@@ -856,7 +856,7 @@ mod tests {
         // Receive a superblock vote for index 1 when we are in index 0
         let mut v1 = SuperBlockVote::new_unsigned(sb2_hash, 1);
         v1.secp256k1_signature.public_key = p1;
-        assert_eq!(sbs.add_vote(&v1), AddSuperBlockVote::MaybeValid);
+        assert_eq!(sbs.add_vote(&v1), AddSuperBlockVote::NotInArs);
         // The vote is not inserted into votes_on_each_superblock because the local superblock is
         // still the one with index 0, while the vote has index 1
         assert_eq!(sbs.votes_on_each_superblock, HashMap::new());

@@ -249,6 +249,18 @@ pub trait Defaults {
         1_000_000_000
     }
 
+    /// Signer committee
+    fn consensus_constants_bootsrapping_committee(&self) -> Vec<String> {
+        // FIXME(#1114): Choose a properly value
+        // [] pkhs
+
+        // Testnet configuration
+        vec![
+            "twit1fulan0j78dmdfa3gx0779kszj5sc5j35feljv5".to_string(),
+            "twit1zutan0dwtfmfcnv34epvjyhwamny20vkx09zjc".to_string(),
+        ]
+    }
+
     /// Minimum input age of an UTXO for being a valid collateral
     fn consensus_constants_collateral_age(&self) -> u32 {
         // FIXME(#1114): Choose a properly value
