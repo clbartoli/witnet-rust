@@ -4,6 +4,8 @@ use crate::chain::{
 };
 use std::collections::{HashMap, HashSet};
 
+use std::convert::TryFrom;
+
 use serde::{Deserialize, Serialize};
 
 use witnet_crypto::{hash::Sha256, merkle::merkle_tree_root as crypto_merkle_tree_root};
@@ -32,6 +34,8 @@ pub enum AddSuperBlockVote {
 pub struct SuperBlockState {
     // Set of ARS identities that will be able to send superblock votes in the next superblock epoch
     current_ars_identities: Option<HashSet<PublicKeyHash>>,
+    // current_ars_identities ordered by reputation
+    current_ordered_ars_identities: Vec<PublicKeyHash>,
     // Subset of ARS in charge of signing the next superblock
     current_signing_committee: Option<HashSet<PublicKeyHash>>,
     // Current superblock hash created by this node
@@ -43,11 +47,15 @@ pub struct SuperBlockState {
     identities_that_voted_more_than_once: HashMap<PublicKeyHash, Vec<SuperBlockVote>>,
     // Set of ARS identities that can currently send superblock votes
     previous_ars_identities: Option<HashSet<PublicKeyHash>>,
+    // previous_ars_identities ordered by reputation
+    previous_ordered_ars_identities: Vec<PublicKeyHash>,
     // The last ARS ordered keys
     previous_ars_ordered_keys: Vec<Bn256PublicKey>,
     // Set of received superblock votes
     // This is cleared when we try to create a new superblock
     received_superblocks: HashSet<SuperBlockVote>,
+    // Size of the signing_committee
+    signing_commmittee_size: Option<u32>,
     // Map each identity to its superblock vote
     votes_of_each_identity: HashMap<PublicKeyHash, SuperBlockVote>,
     // Map of superblock_hash to votes to that superblock
@@ -199,12 +207,15 @@ impl SuperBlockState {
                         &mut self.previous_ars_identities,
                         &mut self.current_ars_identities,
                     );
+                
                     // Reuse allocated memory
                     let hs = self.current_ars_identities.get_or_insert(HashSet::new());
                     hs.clear();
                     hs.extend(ars_pkh_keys.iter().cloned());
                     self.previous_ars_ordered_keys = ars_ordered_bn256_keys.to_vec();
                     // For the current index, update the signing committee
+                    // Set the size to 100
+                    self.signing_commmittee_size = Some(100);
                     self.update_superblock_signing_committee(superblock_index);
                 }
 
@@ -256,12 +267,42 @@ impl SuperBlockState {
         self.received_superblocks.contains(sbv)
     }
 
-    /// Updates the current superblock signing committee for a given superblock index
-    /// #FIXME This function should be update with issue 1395
-    pub fn update_superblock_signing_committee(&mut self, _current_index: u32) {
-        self.current_signing_committee = self.previous_ars_identities.clone();
+    
+    pub fn update_superblock_signing_committee(
+        &mut self,
+        _current_index: u32,
+    ) -> Option<HashSet<PublicKeyHash>>  {
+        // If the number of identities is lower than 100, then all the members of the ARS sign the superblock
+        let ars_ordered = &self.previous_ordered_ars_identities;
+        if ars_ordered.len() < usize::try_from(self.signing_commmittee_size.unwrap()).unwrap() {
+            self.current_signing_committee = self.previous_ars_identities.clone();
+            self.current_signing_committee.clone()
+        }
+        else {
+            // Get the number of subsets of 100 members
+            let n = ars_ordered.len()/100;
+            // Start counting the members of the subset from the superblock_index
+            let first_member = self.current_superblock_index.unwrap();
+            // Get the subset
+            let subset = magic_partition(&ars_ordered.to_vec(), usize::try_from(first_member).unwrap(), n);
+            let hs: HashSet<PublicKeyHash> = subset.iter().cloned().collect();
+            self.current_signing_committee = Some(hs);
+            self.current_signing_committee.clone()
+        }
     }
 }
+
+fn magic_partition<T: Clone>(v: &[T], first: usize, each: usize) -> Vec<T> {
+    if first >= v.len() {
+        return vec![];
+    }
+
+    v[first..]
+        .chunks(each)
+        .map(|chunk| chunk[0].clone())
+        .collect()
+}
+
 
 /// Produces a `SuperBlock` that includes the blocks in `block_headers` if there is at least one of them.
 pub fn mining_build_superblock(
@@ -856,7 +897,7 @@ mod tests {
         // Receive a superblock vote for index 1 when we are in index 0
         let mut v1 = SuperBlockVote::new_unsigned(sb2_hash, 1);
         v1.secp256k1_signature.public_key = p1;
-        assert_eq!(sbs.add_vote(&v1), AddSuperBlockVote::NotInArs);
+        assert_eq!(sbs.add_vote(&v1), AddSuperBlockVote::MaybeValid);
         // The vote is not inserted into votes_on_each_superblock because the local superblock is
         // still the one with index 0, while the vote has index 1
         assert_eq!(sbs.votes_on_each_superblock, HashMap::new());

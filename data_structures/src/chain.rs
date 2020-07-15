@@ -168,8 +168,6 @@ pub struct ConsensusConstants {
     /// Minimum value in nanowits for a collateral value
     pub collateral_minimum: u64,
 
-    pub bootstrapping_committee: Vec<String>,
-
     /// Minimum input age of an UTXO for being a valid collateral
     pub collateral_age: u32,
 
