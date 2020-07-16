@@ -12,6 +12,7 @@ use crate::{
     config_mngr, signature_mngr, storage_mngr,
 };
 use witnet_crypto::key::CryptoEngine;
+use witnet_data_structures::superblock::SuperBlockState;
 use witnet_data_structures::{
     chain::{
         ChainInfo, ChainState, CheckpointBeacon, CheckpointVRF, GenesisBlockInfo,
@@ -175,11 +176,20 @@ impl ChainManager {
                             },
                         };
 
+                        let bootstrap_committee = chain_info
+                            .consensus_constants
+                            .bootstrapping_committee
+                            .iter()
+                            .map(|add| add.parse().unwrap())
+                            .collect();
+                        let superblock_state = SuperBlockState::new(bootstrap_hash, bootstrap_committee);
+
                         ChainState {
                             chain_info: Some(chain_info),
                             reputation_engine: Some(reputation_engine),
                             own_utxos: OwnUnspentOutputsPool::new(consensus_constants.collateral_minimum),
                             data_request_pool: DataRequestPool::new(consensus_constants.extra_rounds),
+                            superblock_state,
                             ..ChainState::default()
                         }
                     }

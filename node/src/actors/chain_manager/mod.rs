@@ -662,16 +662,9 @@ impl ChainManager {
             .highest_block_checkpoint
     }
 
-    /// Retrieves the latest superblock hash an index, if it exists. Else, returns the genesis beacon.
+    /// Retrieves the latest superblock hash an index.
     fn get_superblock_beacon(&self) -> CheckpointBeacon {
-        match self.chain_state.superblock_state.get_beacon() {
-            Some(superblock_beacon) => superblock_beacon,
-            // FIXME(#1367): this should be modified with the appropriate superblock bootstrap state.
-            None => CheckpointBeacon {
-                checkpoint: 0,
-                hash_prev_block: self.consensus_constants().genesis_hash,
-            },
-        }
+        self.chain_state.superblock_state.get_beacon()
     }
 
     fn consensus_constants(&self) -> ConsensusConstants {
@@ -1675,7 +1668,7 @@ mod tests {
             chain_manager.get_superblock_beacon(),
             CheckpointBeacon {
                 checkpoint: 0,
-                hash_prev_block: genesis_hash,
+                hash_prev_block: Hash::default(),
             }
         );
 
