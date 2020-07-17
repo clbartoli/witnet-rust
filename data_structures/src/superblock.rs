@@ -208,7 +208,6 @@ impl SuperBlockState {
                         &mut self.previous_ars_identities,
                         &mut self.current_ars_identities,
                     );
-                
                     // Reuse allocated memory
                     let hs = self.current_ars_identities.get_or_insert(HashSet::new());
                     hs.clear();
@@ -267,24 +266,26 @@ impl SuperBlockState {
         self.received_superblocks.contains(sbv)
     }
 
-    
     pub fn update_superblock_signing_committee(
         &mut self,
         _current_index: u32,
-    ) -> Option<HashSet<PublicKeyHash>>  {
+    ) -> Option<HashSet<PublicKeyHash>> {
         // If the number of identities is lower than 100, then all the members of the ARS sign the superblock
         let ars_ordered = &self.previous_ordered_ars_identities;
         if ars_ordered.len() < usize::try_from(self.signing_commmittee_size.unwrap()).unwrap() {
             self.current_signing_committee = self.previous_ars_identities.clone();
             self.current_signing_committee.clone()
-        }
-        else {
+        } else {
             // Get the number of subsets of 100 members
-            let n = ars_ordered.len()/100;
+            let n = ars_ordered.len() / 100;
             // Start counting the members of the subset from the superblock_index
             let first_member = self.current_superblock_index.unwrap();
             // Get the subset
-            let subset = magic_partition(&ars_ordered.to_vec(), usize::try_from(first_member).unwrap(), n);
+            let subset = magic_partition(
+                &ars_ordered.to_vec(),
+                usize::try_from(first_member).unwrap(),
+                n,
+            );
             let hs: HashSet<PublicKeyHash> = subset.iter().cloned().collect();
             self.current_signing_committee = Some(hs);
             self.current_signing_committee.clone()
@@ -302,7 +303,6 @@ fn magic_partition<T: Clone>(v: &[T], first: usize, each: usize) -> Vec<T> {
         .map(|chunk| chunk[0].clone())
         .collect()
 }
-
 
 /// Produces a `SuperBlock` that includes the blocks in `block_headers` if there is at least one of them.
 pub fn mining_build_superblock(
@@ -508,7 +508,14 @@ mod tests {
             Bn256PublicKey::from_secret_key(&Bn256SecretKey::from_slice(&[1; 32]).unwrap())
                 .unwrap();
         let sb1 = sbs
-            .build_superblock(&block_headers, &ars_identities, &[bls_pk], 100, 0, genesis_hash)
+            .build_superblock(
+                &block_headers,
+                &ars_identities,
+                &[bls_pk],
+                100,
+                0,
+                genesis_hash,
+            )
             .unwrap();
         let v1 = SuperBlockVote::new_unsigned(sb1.hash(), 0);
         assert_eq!(sbs.add_vote(&v1), AddSuperBlockVote::NotInArs);
@@ -528,7 +535,14 @@ mod tests {
 
         let genesis_hash = Hash::default();
         assert_eq!(
-            sbs.build_superblock(&block_headers, &ars_identities, &[bls_pk], 100, 0, genesis_hash),
+            sbs.build_superblock(
+                &block_headers,
+                &ars_identities,
+                &[bls_pk],
+                100,
+                0,
+                genesis_hash
+            ),
             None
         );
 
@@ -603,7 +617,14 @@ mod tests {
         assert_eq!(sbs.add_vote(&v0), AddSuperBlockVote::AlreadySeen);
 
         let _sb2 = sbs
-            .build_superblock(&block_headers, &ars_identities, &[bls_pk], 100, 1, genesis_hash)
+            .build_superblock(
+                &block_headers,
+                &ars_identities,
+                &[bls_pk],
+                100,
+                1,
+                genesis_hash,
+            )
             .unwrap();
         let v1 = SuperBlockVote::new_unsigned(Hash::SHA256([2; 32]), 1);
         assert_eq!(sbs.add_vote(&v1), AddSuperBlockVote::NotInArs);
@@ -950,8 +971,6 @@ mod tests {
 
     // #[test]
     // fn test_update_superblock_signing_committee() {
-
-        
     //     let bls_pk1 =
     //         Bn256PublicKey::from_secret_key(&Bn256SecretKey::from_slice(&[1; 32]).unwrap())
     //             .unwrap();

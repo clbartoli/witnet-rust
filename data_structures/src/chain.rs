@@ -174,9 +174,6 @@ pub struct ConsensusConstants {
     /// Build a superblock every `superblock_period` epochs
     pub superblock_period: u16,
 
-    /// Size of the superblock signing committee
-    pub signing_committee_size: u32,
-
     /// Extra rounds for commitments and reveals
     pub extra_rounds: u16,
 
@@ -190,6 +187,9 @@ pub struct ConsensusConstants {
 
     /// Superblock signing committee for the first superblocks
     pub bootstrapping_committee: Vec<String>,
+
+    /// Size of the superblock signing committee
+    pub signing_committee_size: u32,
 }
 
 impl ConsensusConstants {

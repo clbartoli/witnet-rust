@@ -111,7 +111,7 @@ pub trait Defaults {
         10
     }
 
-      /// Default size of the superblock signing committee
+    /// Default size of the superblock signing committee
     fn consensus_constants_signing_committee_size(&self) -> u32 {
         100
     }
@@ -278,18 +278,6 @@ pub trait Defaults {
     /// Number of extra rounds for commitments and reveals
     fn consensus_constants_extra_rounds(&self) -> u16 {
         3
-    }
-
-    /// First superblocks signing committee
-    fn consensus_constants_bootsrapping_committee(&self) -> Vec<String> {
-        // FIXME(#1114): Choose a proper value for the committee
-        // [] pkhs
-
-        // Testnet configuration
-        vec![
-            "twit1fulan0j78dmdfa3gx0779kszj5sc5j35feljv5".to_string(),
-            "twit1zutan0dwtfmfcnv34epvjyhwamny20vkx09zjc".to_string(),
-        ]
     }
 
     /// Wallet server address
