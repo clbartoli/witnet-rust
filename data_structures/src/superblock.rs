@@ -150,11 +150,12 @@ impl SuperBlockState {
                     Some(x.contains(&sbv.secp256k1_signature.public_key.pkh()))
                 })
         } else if ((self.current_superblock_index.saturating_sub(1))
-                ..=self.current_superblock_index.saturating_add(1))
-                .contains(&sbv.superblock_index){
-                None
-            } else {
-                Some(false)
+            ..=self.current_superblock_index.saturating_add(1))
+            .contains(&sbv.superblock_index)
+        {
+            None
+        } else {
+            Some(false)
         }
     }
 
