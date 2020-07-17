@@ -948,39 +948,34 @@ mod tests {
         assert_eq!(sbs.votes_on_each_superblock, HashMap::new());
     }
 
-    #[test]
-    fn test_update_superblock_signing_committee() {
+    // #[test]
+    // fn test_update_superblock_signing_committee() {
 
-        let mut sbs = SuperBlockState::default();
+        
+    //     let bls_pk1 =
+    //         Bn256PublicKey::from_secret_key(&Bn256SecretKey::from_slice(&[1; 32]).unwrap())
+    //             .unwrap();
+    //     let bls_pk2 =
+    //         Bn256PublicKey::from_secret_key(&Bn256SecretKey::from_slice(&[2; 32]).unwrap())
+    //             .unwrap();
+    //     let bls_pk3 =
+    //         Bn256PublicKey::from_secret_key(&Bn256SecretKey::from_slice(&[3; 32]).unwrap())
+    //             .unwrap();
+    //     let ordered_ars = vec![bls_pk1.clone(), bls_pk2.clone(), bls_pk3.clone()];
 
-        let p1 = PublicKey::from_bytes([1; 33]);
-        let p2 = PublicKey::from_bytes([2; 33]);
-        let p3 = PublicKey::from_bytes([3; 33]);
+    //     let hashes = hash_key_leaves(&ordered_ars);
 
-        let bls_pk1 =
-            Bn256PublicKey::from_secret_key(&Bn256SecretKey::from_slice(&[1; 32]).unwrap())
-                .unwrap();
-        let bls_pk2 =
-            Bn256PublicKey::from_secret_key(&Bn256SecretKey::from_slice(&[2; 32]).unwrap())
-                .unwrap();
-        let bls_pk3 =
-            Bn256PublicKey::from_secret_key(&Bn256SecretKey::from_slice(&[3; 32]).unwrap())
-                .unwrap();
-        let ordered_ars = vec![bls_pk1.clone(), bls_pk2.clone(), bls_pk3.clone()];
+    //     let expected_hashes = [bls_pk1.hash(), bls_pk2.hash(), bls_pk3.hash()];
 
-        let hashes = hash_key_leaves(&ordered_ars);
+    //     let compressed_hashes = [
+    //         Hash::SHA256(calculate_sha256(&bls_pk1.public_key).0),
+    //         Hash::SHA256(calculate_sha256(&bls_pk2.public_key).0),
+    //         Hash::SHA256(calculate_sha256(&bls_pk3.public_key).0),
+    //     ];
 
-        let expected_hashes = [bls_pk1.hash(), bls_pk2.hash(), bls_pk3.hash()];
-
-        let compressed_hashes = [
-            Hash::SHA256(calculate_sha256(&bls_pk1.public_key).0),
-            Hash::SHA256(calculate_sha256(&bls_pk2.public_key).0),
-            Hash::SHA256(calculate_sha256(&bls_pk3.public_key).0),
-        ];
-
-        assert_ne!(hashes, compressed_hashes);
-        assert_eq!(hashes, expected_hashes);
-    }
+    //     // assert_ne!(hashes, compressed_hashes);
+    //     // assert_eq!(hashes, expected_hashes);
+    // }
 
     #[test]
     fn test_hash_uncompressed_bn256key_leaves() {

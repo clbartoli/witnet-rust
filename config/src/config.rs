@@ -498,6 +498,10 @@ pub fn consensus_constants_from_partial(
             .extra_rounds
             .to_owned()
             .unwrap_or_else(|| defaults.consensus_constants_extra_rounds()),
+        signing_committee_size: config
+            .signing_committee_size
+            .to_owned()
+            .unwrap_or_else(|| defaults.consensus_constants_signing_committee_size()),    
     }
 }
 

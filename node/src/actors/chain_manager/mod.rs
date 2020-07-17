@@ -986,11 +986,13 @@ impl ChainManager {
                 }
             };
             let ars_ordered_keys = &act.chain_state.last_ars_ordered_keys;
+            let signing_committee_size = chain_info.consensus_constants.signing_committee_size;
 
             let superblock = act.chain_state.superblock_state.build_superblock(
                 &block_headers,
                 &ars_members,
                 ars_ordered_keys,
+                signing_committee_size,
                 superblock_index,
                 last_hash,
             );

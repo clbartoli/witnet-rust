@@ -298,12 +298,13 @@ message ConsensusConstants {
     uint32 mining_backup_factor = 12;
     uint32 mining_replication_factor = 13;
     uint64 collateral_minimum = 14;
-    repeated string bootstrapping_committee = 15;
-    uint32 collateral_age = 16;
-    uint32 superblock_period = 17;
-    uint32 extra_rounds = 18;
-    uint32 initial_difficulty = 19;
-    uint32 epochs_with_initial_difficulty = 20;
+    uint32 collateral_age = 15;
+    uint32 superblock_period = 16;
+    uint32 extra_rounds = 17;
+    uint32 initial_difficulty = 18;
+    uint32 epochs_with_initial_difficulty = 19;
+    repeated string bootstrapping_committee = 20;
+    uint32 signing_committee_size = 21;
 }
 
 message VrfProof {

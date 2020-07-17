@@ -111,6 +111,11 @@ pub trait Defaults {
         10
     }
 
+      /// Default size of the superblock signing committee
+    fn consensus_constants_signing_committee_size(&self) -> u32 {
+        100
+    }
+
     /// Default Hash value for the auxiliary bootstrap block
     // TODO Decide an appropriate default value
     fn consensus_constants_bootstrap_hash(&self) -> Hash {
