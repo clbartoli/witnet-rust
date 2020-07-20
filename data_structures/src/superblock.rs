@@ -255,7 +255,11 @@ impl SuperBlockState {
 
     /// Updates the current superblock signing committee for a given superblock index
     /// #FIXME This function should be update with issue 1395
-    pub fn update_superblock_signing_committee(&mut self, _singning_committee_size: u32, _current_index: u32) {
+    pub fn update_superblock_signing_committee(
+        &mut self,
+        _singning_committee_size: u32,
+        _current_index: u32,
+    ) {
         self.current_signing_committee = self.previous_ars_identities.clone();
     }
 }
@@ -464,7 +468,14 @@ mod tests {
             Bn256PublicKey::from_secret_key(&Bn256SecretKey::from_slice(&[1; 32]).unwrap())
                 .unwrap();
         let sb1 = sbs
-            .build_superblock(&block_headers, &ars_identities, &[bls_pk], 100, 0, genesis_hash)
+            .build_superblock(
+                &block_headers,
+                &ars_identities,
+                &[bls_pk],
+                100,
+                0,
+                genesis_hash,
+            )
             .unwrap();
         let v1 = SuperBlockVote::new_unsigned(sb1.hash(), 0);
         assert_eq!(sbs.add_vote(&v1), AddSuperBlockVote::NotInArs);
@@ -484,7 +495,14 @@ mod tests {
 
         let genesis_hash = Hash::default();
         assert_eq!(
-            sbs.build_superblock(&block_headers, &ars_identities, &[bls_pk], 100, 0, genesis_hash),
+            sbs.build_superblock(
+                &block_headers,
+                &ars_identities,
+                &[bls_pk],
+                100,
+                0,
+                genesis_hash
+            ),
             None
         );
 
@@ -559,7 +577,14 @@ mod tests {
         assert_eq!(sbs.add_vote(&v0), AddSuperBlockVote::AlreadySeen);
 
         let _sb2 = sbs
-            .build_superblock(&block_headers, &ars_identities, &[bls_pk], 100, 1, genesis_hash)
+            .build_superblock(
+                &block_headers,
+                &ars_identities,
+                &[bls_pk],
+                100,
+                1,
+                genesis_hash,
+            )
             .unwrap();
         let v1 = SuperBlockVote::new_unsigned(Hash::SHA256([2; 32]), 1);
         assert_eq!(sbs.add_vote(&v1), AddSuperBlockVote::NotInArs);
@@ -643,7 +668,7 @@ mod tests {
         // Superblock votes for index 0 cannot be validated because we do not know the ARS for index -1
         // (because it does not exist)
         let _sb0 = sbs
-            .build_superblock(&block_headers, &ars0, &ars0_ordered,  100, 0, genesis_hash)
+            .build_superblock(&block_headers, &ars0, &ars0_ordered, 100, 0, genesis_hash)
             .unwrap();
 
         // The ARS included in superblock 0 is empty, so none of the superblock votes for index 1
