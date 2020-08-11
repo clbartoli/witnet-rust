@@ -20,11 +20,37 @@ mod validations {
         let my_reputation = rep_eng.trs().get(pkh);
         // Add 1 to reputation because otherwise a node with 0 reputation would
         // never be eligible for a data request
-        let my_reputation = u64::from(my_reputation.0) + 1;
+        let mut my_reputation = u64::from(my_reputation.0) + 1;
 
         // Add N to the total active reputation to account for the +1 to my_reputation
         // This is equivalent to adding 1 reputation to every active identity
         let total_active_reputation = rep_eng.total_active_reputation();
+
+        // Get the list of pkh ordered by reputation
+        let ars_ordered = rep_eng.get_rep_ordered_ars_list();
+
+        // Get the median
+        let median = ars_ordered.len() / 2;
+
+        // Parameters of the line y = mx + k
+        let m = rep_eng.trs().get(median) / ars_ordered.len() - 1;
+        let k = -m * (ars_ordered.len() - 1);
+
+        // Calculate the repuation included in the under the line
+        let mut rep_triangle = magic_line(0, m, k);
+        for i in 0..ars_ordered.len() {
+            rep_triangle = rep_triangle + magic_line(i + 1, m, k)
+        }
+
+        // Calculate the offset needed to get the same total repuation
+        let offset = (total_active_reputation - rep_triangle) / ars_ordered.len();
+
+        // Calculate my_reputation in the trapezoid
+        my_reputation = if let Some(position) = ars_ordered.iter().position(|a| *a == pkh) {
+            magic_line(ars_ordered.len() - position, m: u32, k: u32) + offset
+        } else {
+            0
+        };
 
         // The probability of being eligible is `factor / total_active_reputation`
         let factor = u64::from(num_witnesses) * my_reputation;
@@ -40,6 +66,10 @@ mod validations {
 
         let probability = (target as f64 / (max >> 32) as f64) * 100_f64;
         (Hash::with_first_u32(target), probability)
+    }
+
+    fn magic_line(x: u32, m: u32, k: u32) -> u32 {
+        m * x + k
     }
 }
 
