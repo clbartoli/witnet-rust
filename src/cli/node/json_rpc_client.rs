@@ -255,8 +255,38 @@ pub fn get_reputation(
 ) -> Result<(), failure::Error> {
     let mut stream = start_client(addr)?;
 
-    let request = if all {
-        r#"{"jsonrpc": "2.0","method": "getReputationAll", "id": "1"}"#.to_string()
+    if all {
+        let request = r#"{"jsonrpc": "2.0","method": "getReputationAll", "id": "1"}"#.to_string();
+        let response = send_request(&mut stream, &request)?;
+    let res = parse_response::<GetReputationResult>(&response)?;
+
+    if res.stats.is_empty() {
+        println!("No identities have reputation yet");
+    }
+
+    for (pkh, rep_stats) in res.stats.into_iter().sorted_by_key(|(_, rep_stats)| {
+        std::cmp::Reverse((rep_stats.reputation.0, rep_stats.eligibility))
+    }) {
+        if rep_stats.is_active{
+         let active = { 'A' };
+        let eligibility = f64::from(rep_stats.eligibility) / res.total_reputation as f64;
+         println!(
+            "    [{}] {} -> Reputation: {}, Eligibility: {:.6}%",
+            active,
+            pkh,
+            rep_stats.reputation.0,
+            eligibility * 100_f64
+        );   
+        } else {
+            let active = { ' ' };
+         println!(
+            "    [{}] {} -> Reputation: {}",
+            active,
+            pkh,
+            rep_stats.reputation.0
+        );  
+        } 
+    }
     } else {
         let pkh = match opt_pkh {
             Some(pkh) => pkh,
@@ -271,18 +301,12 @@ pub fn get_reputation(
             }
         };
 
-        format!(
+        let request = format!(
             r#"{{"jsonrpc": "2.0","method": "getReputation", "params": [{}], "id": "1"}}"#,
             serde_json::to_string(&pkh)?,
-        )
-    };
-
-    let response = send_request(&mut stream, &request)?;
+        );
+        let response = send_request(&mut stream, &request)?;
     let res = parse_response::<GetReputationResult>(&response)?;
-
-    if res.stats.is_empty() {
-        println!("No identities have reputation yet");
-    }
 
     for (pkh, rep_stats) in res.stats.into_iter().sorted_by_key(|(_, rep_stats)| {
         std::cmp::Reverse((rep_stats.reputation.0, rep_stats.eligibility))
@@ -297,6 +321,9 @@ pub fn get_reputation(
             eligibility * 100_f64
         );
     }
+    };
+
+    
 
     Ok(())
 }

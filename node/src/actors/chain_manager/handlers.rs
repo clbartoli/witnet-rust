@@ -1351,7 +1351,16 @@ impl Handler<GetReputation> for ChainManager {
         };
 
         let identities = if all {
-            rep_eng.trs().identities().map(|(k, _v)| k).collect()
+            let mut trs = Vec::new();
+            trs = rep_eng.trs().identities().map(|(k, _v)| k).collect();
+            let mut active_identities = Vec::new();
+             active_identities = rep_eng.ars().active_identities().collect();
+             for i in 0..active_identities.len() {
+              if rep_eng.trs().get(active_identities[i]).0 == 0 {
+                  trs.push(active_identities[i]);
+              }
+             }
+            trs
         } else {
             vec![&pkh]
         };
