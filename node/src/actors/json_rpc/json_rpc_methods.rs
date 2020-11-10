@@ -85,6 +85,9 @@ pub fn jsonrpc_io_handler(
     io.add_method("getSuperblock", |params: Params| {
         get_superblock(params.parse())
     });
+    io.add_method("ping", |_params: Params| {
+        futures::future::finished("pong".into())
+    });
 
     // Enable methods that assume that JSON-RPC is only accessible by the owner of the node.
     // A method is sensitive if it touches in some way the master key of the node.
