@@ -75,7 +75,7 @@ impl App {
                 for (_, wallet) in wallets.iter() {
                     self.params
                         .worker
-                        .do_send(NotifyStatus(wallet.clone(), dyn_sink.clone()));
+                        .do_send(NotifyStatus(wallet.clone(), dyn_sink.clone(), None));
                 }
             }
         })
@@ -754,12 +754,22 @@ impl App {
     pub fn node_ping_pong(&self, ctx: &mut <Self as Actor>::Context) {
         let method = "syncStatus".to_string();
 
+        let wallets: Vec<types::SessionWallet> = self
+            .state
+            .wallets
+            .iter()
+            .map(|(_, wallet)| wallet.clone())
+            .collect();
+
+        
+        let events = Some(vec![types::Event::NodeDisconnected]);
         let req = types::RpcRequest::method(method)
             .timeout(self.params.requests_timeout)
             .params(())
             .expect("params failed serialization");
 
         log::debug!("Sending periodic request: {:?}", req);
+        //let mut result = SyncStatus.de; 
 
         let f = self
             .get_client()
@@ -768,16 +778,31 @@ impl App {
             .flatten()
             .inspect(|res| {
                 log::debug!("Periodic request result: {:?}", res);
+                let status = serde_json::from_value::<types::SyncStatus>(res.clone());
+                // if status.ok().unwrap().synchronized == true {
+
+                 log::debug!("The result of the node status is {:?}", status.unwrap());
+                // }
+                //log::error!("The result of the node status is {:?}", status.ok().unwrap().node_state.unwrap());
+                
             })
-            .map_err(|err| {
+            .into_actor(self)
+            .map_err(move |err, act, _ctx| {
                 log::warn!("Periodic request failed: {}", &err);
+                 for wallet in &wallets {
+             let sink = act.state.get_sink(&wallet.session_id);
+            //     //self.params.worker.node_is_disconnected();
+                act.params.worker.do_send(NotifyStatus(wallet.clone(), sink, events.clone()))};
                 // TODO: detect node disconnected
             })
-            .map(|_res| {
+            .map(|_res, _act, _ctx| {
                 // Ignore result
             })
-            .into_actor(self);
+            ;
+        //let node_status = serde_json::from_value::<types::SyncStatus>(f);
         ctx.spawn(f);
+
+        //self.handle_node_status_notification(f.clone());
 
         // Try to contact the node once every 10 seconds
         let duration = std::time::Duration::from_secs(10);

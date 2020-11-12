@@ -17,7 +17,7 @@ use serde::{Deserialize, Serialize};
 
 use witnet_crypto::key::KeyPath;
 use witnet_data_structures::{
-    chain::{Block, CheckpointBeacon, Hash, Hashable, PublicKeyHash, StateMachine},
+    chain::{Block, Hash, Hashable, PublicKeyHash, StateMachine, SyncStatus},
     transaction::Transaction,
     vrf::VrfMessage,
 };
@@ -890,18 +890,18 @@ pub fn send_value(params: Result<BuildVtt, jsonrpc_core::Error>) -> JsonRpcResul
     }
 }
 
-/// Node synchronization status
-#[derive(Debug, Default, Deserialize, Serialize)]
-pub struct SyncStatus {
-    /// The hash of the top consolidated block and the epoch of that block
-    pub chain_beacon: CheckpointBeacon,
-    /// The current epoch, or None if the epoch 0 is in the future
-    pub current_epoch: Option<u32>,
-    /// Is the node synchronized?
-    pub synchronized: bool,
-    /// Node State
-    pub node_state: Option<StateMachine>,
-}
+// /// Node synchronization status
+// #[derive(Debug, Default, Deserialize, Serialize)]
+// pub struct SyncStatus {
+//     /// The hash of the top consolidated block and the epoch of that block
+//     pub chain_beacon: CheckpointBeacon,
+//     /// The current epoch, or None if the epoch 0 is in the future
+//     pub current_epoch: Option<u32>,
+//     /// Is the node synchronized?
+//     pub synchronized: bool,
+//     /// Node State
+//     pub node_state: Option<StateMachine>,
+// }
 
 /// Get node status
 pub fn status() -> JsonRpcResultAsync {

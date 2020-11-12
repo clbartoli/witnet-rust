@@ -780,6 +780,7 @@ impl Worker {
         Ok(())
     }
 
+
     /// Ask a Witnet node for every block that have been written into the chain after a certain
     /// epoch.
     /// The node is free to choose not to deliver all existing blocks but to do it in chunks. Thus
@@ -1129,4 +1130,5 @@ impl Worker {
             Ok(false)
         }
     }
+    
 }
