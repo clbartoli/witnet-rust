@@ -173,7 +173,9 @@ impl State {
     }
 
     /// Updates the node state
-    pub fn update_node_state(&mut self, node_state: StateMachine) {
-        self.node_state = Some(node_state);
+    pub fn update_node_state(&mut self, node_state: Option<StateMachine>) {
+        if node_state != None {
+        self.node_state = node_state;
+        }
     }
 }

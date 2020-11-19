@@ -584,7 +584,7 @@ impl App {
             let sink = self.state.get_sink(&wallet.session_id);
             self.handle_node_status_in_worker(&status, wallet, sink.clone());
         }
-        self.state.update_node_state(status);
+        self.state.update_node_state(Some(status));
 
         Ok(())
     }
@@ -778,7 +778,13 @@ impl App {
             .map(|(_, wallet)| wallet.clone())
             .collect();
 
+        let wallets2 = wallets.clone();  
+
         let events = Some(vec![types::Event::NodeDisconnected]);
+
+        // for wallet in &wallets {
+        //     let event2 = Some(vec![types::Event::NodeStatus(self.state.node_state.unwrap())]);
+        // }
         let req = types::RpcRequest::method(method)
             .timeout(self.params.requests_timeout)
             .params(())
@@ -794,21 +800,45 @@ impl App {
             .inspect(|res| {
                 log::debug!("Periodic request result: {:?}", res);
                 let status = serde_json::from_value::<types::SyncStatus>(res.clone());
+                // if status.is_ok() &&  status.unwrap().node_state == Some(StateMachine::Synced){
+                //     self.state.update_node_state(StateMachine::Synced)
+                // }
                 log::debug!("The result of the node status is {:?}", status);
             })
             .into_actor(self)
             .map_err(move |err, act, _ctx| {
                 log::warn!("Periodic request failed: {}", &err);
                 log::error!("The node is disconnected");
+                //act.state.update_node_state(None);
                 // Notify that the node is disconnected
-                for wallet in &wallets {
+                for wallet in &wallets2 {
                     let sink = act.state.get_sink(&wallet.session_id);
                     act.params
                         .worker
                         .do_send(NotifyStatus(wallet.clone(), sink, events.clone()))
                 }
             })
-            .map(|_res, _act, _ctx| {
+            .map(move |res, act, _ctx| {
+
+                let status = serde_json::from_value::<types::SyncStatus>(res);
+                if status.is_ok() &&  status.unwrap().node_state == Some(StateMachine::Synced){
+                    act.state.update_node_state(Some(StateMachine::Synced));
+                    log::info!("The node status is {:?}", act.state.node_state.unwrap());  
+                }
+                // if status.is_ok() &&  status.unwrap().node_state != act.state.node_state {
+                //     //if act.state.node_state != status.unwrap().node_state {
+                //     //let node_status = status.unwrap().node_state;
+                //     act.state.update_node_state(status.unwrap().node_state);
+                //     log::info!("The node status is {:?}", act.state.node_state.unwrap());  
+                // }
+                for wallet in &wallets {
+                    let sink = act.state.get_sink(&wallet.session_id);
+                    let event2 = Some(vec![types::Event::NodeStatus(act.state.node_state.unwrap())]);
+
+                    act.params
+                        .worker
+                        .do_send(NotifyStatus(wallet.clone(), sink, event2.clone()))
+                }
                 // TODO: send event with node state
             });
         ctx.spawn(f);
