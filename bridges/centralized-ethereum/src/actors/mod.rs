@@ -12,3 +12,6 @@ pub mod eth_poller;
 
 /// wit_poller actor module
 pub mod wit_poller;
+
+/// eth_client actor module
+pub mod eth_client;

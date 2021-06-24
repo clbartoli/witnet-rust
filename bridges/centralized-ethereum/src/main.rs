@@ -8,7 +8,7 @@ use web3::{contract, types::U256};
 use witnet_centralized_ethereum_bridge::{
     actors::{
         dr_database::DrDatabase, dr_reporter::DrReporter, dr_sender::DrSender,
-        eth_poller::EthPoller, wit_poller::WitPoller,
+        eth_poller::EthPoller, wit_poller::WitPoller, eth_client::EthClient,
     },
     check_ethereum_node_running, check_witnet_node_running, config, create_wrb_contract,
 };
@@ -109,7 +109,12 @@ fn run(callback: fn()) -> Result<(), String> {
                 .await
                 .expect("witnet node not running");
 
-            // Start EthPoller actor
+             // Start EthClient actor
+            // TODO: Remove unwrap
+            let eth_client = EthClient::from_config(&config).unwrap().start();
+            SystemRegistry::set(eth_client);
+
+                // Start EthPoller actor
             // TODO: Remove unwrap
             let eth_poller_addr = EthPoller::from_config(&config).unwrap().start();
             SystemRegistry::set(eth_poller_addr);
