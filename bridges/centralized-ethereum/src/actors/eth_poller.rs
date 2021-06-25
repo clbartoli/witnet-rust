@@ -2,6 +2,8 @@ use crate::{
     actors::dr_database::{DrDatabase, DrInfoBridge, DrState, GetLastDrId, SetDrInfoBridge},
     config::Config,
     create_wrb_contract,
+    config,
+    check_ethereum_node_running,
 };
 use actix::prelude::*;
 use std::{convert::TryFrom, time::Duration};
@@ -10,6 +12,8 @@ use web3::{
     ethabi::Bytes,
     types::{H160, U256},
 };
+use std::{path::PathBuf, sync::Arc};
+use structopt::StructOpt;
 use witnet_data_structures::chain::Hash;
 use witnet_util::timestamp::get_timestamp;
 
@@ -23,6 +27,17 @@ pub struct EthPoller {
     pub eth_new_dr_polling_rate_ms: u64,
     /// eth_account
     pub eth_account: H160,
+}
+
+/// Command line usage and flags
+#[derive(Debug, StructOpt)]
+struct App {
+    /// Path of the config file
+    #[structopt(short = "c", long)]
+    config: Option<PathBuf>,
+    /// Post data request and exit
+    #[structopt(long = "post-dr")]
+    post_dr: bool,
 }
 
 /// Make actor from EthPoller
@@ -62,6 +77,14 @@ impl EthPoller {
     fn check_new_requests_from_ethereum(&self, ctx: &mut Context<Self>, period: Duration) {
         let wrb_contract = self.wrb_contract.clone().unwrap();
         let eth_account = self.eth_account;
+        let app = App::from_args();
+    let config = config::from_file(
+        app.config
+            .unwrap_or_else(|| "witnet_centralized_ethereum_bridge.toml".into()),
+    )
+    .map(Arc::new)
+    .map_err(|e| format!("Error reading configuration file: {}", e));
+     
         // Check requests
         let fut = async move {
             let total_requests_count: Result<U256, web3::contract::Error> = wrb_contract
@@ -133,8 +156,10 @@ impl EthPoller {
                                     ));
                                 }
                             } else {
-                                break;
-                            }
+                                    let result = check_ethereum_node_running(&config.unwrap());
+                                    break;
+                            }         
+                                
                         } else {
                             break;
                         }
