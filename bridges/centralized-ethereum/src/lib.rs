@@ -7,6 +7,7 @@
 #![deny(missing_docs)]
 
 use crate::config::Config;
+use web3::types::H160;
 use async_jsonrpc_client::{transports::tcp::TcpSocket, Transport};
 use futures_util::compat::Compat01As03;
 use serde_json::json;
@@ -19,8 +20,8 @@ pub mod actors;
 pub mod config;
 
 /// Creates a Witnet Request Board contract from Config information
-pub fn create_wrb_contract(config: &Config) -> Contract<Http> {
-    let web3_http = web3::transports::Http::new(&config.eth_client_url)
+pub fn create_wrb_contract(eth_client_url: &str, wrb_contract_addr: H160) -> Contract<Http> {
+    let web3_http = web3::transports::Http::new(eth_client_url)
         .map_err(|e| format!("Failed to connect to Ethereum client.\nError: {:?}", e))
         .unwrap();
     let web3 = web3::Web3::new(web3_http);
@@ -29,8 +30,7 @@ pub fn create_wrb_contract(config: &Config) -> Contract<Http> {
     let wrb_contract_abi = web3::ethabi::Contract::load(wrb_contract_abi_json)
         .map_err(|e| format!("Unable to load WRB contract from ABI: {:?}", e))
         .unwrap();
-    let wrb_contract_address = config.wrb_contract_addr;
-    Contract::new(web3.eth(), wrb_contract_address, wrb_contract_abi)
+    Contract::new(web3.eth(), wrb_contract_addr, wrb_contract_abi)
 }
 
 /// Check if the witnet node is running
@@ -74,15 +74,15 @@ pub async fn check_witnet_node_running(config: &Config) -> Result<(), String> {
 }
 
 /// Check if the ethereum node is running
-pub async fn check_ethereum_node_running(config: &Config) -> Result<(), String> {
-    let web3_http = web3::transports::Http::new(&config.eth_client_url)
+pub async fn check_ethereum_node_running(eth_client_url: &str) -> Result<(), String> {
+    let web3_http = web3::transports::Http::new(eth_client_url)
         .map_err(|e| format!("Failed to connect to Ethereum client.\nError: {:?}", e));
 
     // TODO: check if the contract address is correct?
 
     match web3_http {
         Ok(_x) => {
-            log::debug!("Ethereum node is running at {}", config.eth_client_url);
+            log::debug!("Ethereum node is running at {}", eth_client_url);
 
             Ok(())
         }

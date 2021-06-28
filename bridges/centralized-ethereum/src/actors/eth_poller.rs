@@ -2,6 +2,7 @@ use crate::{
     actors::dr_database::{DrDatabase, DrInfoBridge, DrState, GetLastDrId, SetDrInfoBridge},
     config::Config,
     create_wrb_contract,
+    check_ethereum_node_running,
 };
 use actix::prelude::*;
 use std::{convert::TryFrom, time::Duration};
@@ -23,6 +24,10 @@ pub struct EthPoller {
     pub eth_new_dr_polling_rate_ms: u64,
     /// eth_account
     pub eth_account: H160,
+    /// eth client url
+    pub eth_client_url: String,
+    /// wrb contract address
+    pub wrb_contract_addr: H160
 }
 
 /// Make actor from EthPoller
@@ -50,18 +55,34 @@ impl SystemService for EthPoller {}
 impl EthPoller {
     /// Initialize `PeersManager` taking the configuration from a `Config` structure
     pub fn from_config(config: &Config) -> Result<Self, String> {
-        let wrb_contract = create_wrb_contract(config);
+        
+        let wrb_contract = create_wrb_contract(&config.eth_client_url, config.wrb_contract_addr);
 
         Ok(Self {
             wrb_contract: Some(wrb_contract),
             eth_new_dr_polling_rate_ms: config.eth_new_dr_polling_rate_ms,
             eth_account: config.eth_account,
+            eth_client_url: config.eth_client_url.clone(),
+            wrb_contract_addr: config.wrb_contract_addr,
         })
     }
 
     fn check_new_requests_from_ethereum(&self, ctx: &mut Context<Self>, period: Duration) {
+        // check_eth_node running
+        // check_ethereum_node_running(&self.eth_client_url).map_err(|r| {
+        //     create_wrb_contract(&self.eth_client_url, self.wrb_contract_addr)
+        // }).await;
+        // if res == Err(_) {
+        //     create_wrb_contract(&self.eth_client_url, self.wrb_contract_addr)
+        // }
+        // match res {
+        //     Ok(_) => ,
+        //     Err(_) => create_wrb_contract(&self.eth_client_url, self.wrb_contract_addr),
+        // }
+        // if not running ==> create_wrb_contract
         let wrb_contract = self.wrb_contract.clone().unwrap();
         let eth_account = self.eth_account;
+        
         // Check requests
         let fut = async move {
             let total_requests_count: Result<U256, web3::contract::Error> = wrb_contract
@@ -133,9 +154,11 @@ impl EthPoller {
                                     ));
                                 }
                             } else {
+                                log::error!("ERRORRRRRRR dr_tx_hash _______{:?}", dr_tx_hash);
                                 break;
                             }
                         } else {
+                            log::error!("ERRORRRRRRR dr_bytes _______{:?}", dr_bytes);
                             break;
                         }
                     }

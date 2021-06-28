@@ -2,6 +2,7 @@ use crate::{
     actors::dr_database::{DrDatabase, DrId, DrInfoBridge, DrState, SetDrInfoBridge},
     config::Config,
     create_wrb_contract,
+    check_ethereum_node_running,
 };
 use actix::prelude::*;
 use web3::{
@@ -23,6 +24,10 @@ pub struct DrReporter {
     pub report_result_limit: Option<u64>,
     /// maximum result size (in bytes)
     pub max_result_size: usize,
+    /// eth client url
+    pub eth_client_url: String,
+    /// wrb contract address
+    pub wrb_contract_addr: H160
 }
 
 /// Make actor from EthPoller
@@ -45,13 +50,15 @@ impl SystemService for DrReporter {}
 impl DrReporter {
     /// Initialize `DrReporter` taking the configuration from a `Config` structure
     pub fn from_config(config: &Config) -> Result<Self, String> {
-        let wrb_contract = create_wrb_contract(config);
+        let wrb_contract = create_wrb_contract(&config.eth_client_url, config.wrb_contract_addr);
 
         Ok(Self {
             wrb_contract: Some(wrb_contract),
             eth_account: config.eth_account,
             report_result_limit: config.gas_limits.report_result,
             max_result_size: config.max_result_size,
+            eth_client_url: config.eth_client_url.clone(),
+            wrb_contract_addr: config.wrb_contract_addr,
         })
     }
 }
